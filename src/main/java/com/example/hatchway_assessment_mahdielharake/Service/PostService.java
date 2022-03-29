@@ -36,7 +36,7 @@ public class PostService {
     }
 
     private static void dataValidator(String tags,String sortBy,String direction) throws Exception {
-        if(tags==null) {
+        if(tags==null || tags=="" || tags==" ") {
             log.error("tag is null");
             throw new Exception(ErrorMessage.TAG_PARAMETER_REQUIRED);
         }

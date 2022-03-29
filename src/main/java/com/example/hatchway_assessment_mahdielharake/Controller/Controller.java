@@ -16,6 +16,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
+import java.net.URISyntaxException;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
@@ -38,7 +40,7 @@ public class Controller {
     @GetMapping("/posts")
     @Cacheable
     @Async
-    public CompletableFuture<ResponseEntity<Object>> getPosts(
+    public ResponseEntity getPosts(
             //put tags required field false so we can handle custom exception
             @RequestParam(required = false) String tags,
             @RequestParam(required = false) String sortBy,
@@ -49,11 +51,14 @@ public class Controller {
         try {
             List<Post> posts= service.getPost(tags,sortBy,direction);
             blog=new PostList(posts);
+            System.out.println(blog);
         } catch (Exception e) {
-            return  CompletableFuture.completedFuture(new ResponseEntity<>(new CallError(e.getMessage()),HttpStatus.BAD_REQUEST));
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Tag parameter is required");
         }
-        return CompletableFuture.completedFuture(new ResponseEntity<>(blog,HttpStatus.OK));
+        return ResponseEntity.status(HttpStatus.OK).body(blog);
     }
+
+
 
 
 }
